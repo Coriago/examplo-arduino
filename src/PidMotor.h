@@ -11,9 +11,11 @@ public:
     void setInterrupt(void (*interrupt)(void));
     void setMotorSpeed(float velocity);
     void runMotor(int dir, int pwmVal);
-    void update(void);
+    float update(void);
     void pulseEncoder(void);
     int getPos(void);
+
+    const int ROTATION_COUNT = 90;
 
 private:
     uint8_t _dirPin1, _dirPin2, _pwmPin, _encPinA, _encPinB;

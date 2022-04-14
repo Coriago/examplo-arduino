@@ -1,7 +1,6 @@
 
 #include "PidMotor.h"
 
-
 PidMotor::PidMotor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, uint8_t encPinA, uint8_t encPinB)
 {
     _dirPin1 = dirPin1;
@@ -32,7 +31,7 @@ void PidMotor::setMotorSpeed(float velocity) {
     // Something
 }
 
-void PidMotor::update(void) {
+float PidMotor::update(void) {
   // Update time
   long currTime = micros();
   float deltaTime = ((float) (currTime - prevTime))/( 1.0e6 );
@@ -40,13 +39,16 @@ void PidMotor::update(void) {
 
   //Update Velocity
   int measuredPos = this->getPos();
-  float currentVel = (measuredPos - prevPos)/deltaTime;
+  float currentVel = (measuredPos - prevPos) / deltaTime / 90;
   prevPos = measuredPos;
 
-  velocityFilt = 0.854*velocityFilt + 0.0728*currentVel + 0.0728*velocityPrev;
-  velocityPrev = currentVel;
+  // velocityFilt = 0.854*velocityFilt + 0.0728*currentVel + 0.0728*velocityPrev;
+  // velocityPrev = currentVel;
 
-  Serial.print(velocityFilt);
+  // Serial.print(velocityFilt);
+  // Serial.print(",");
+
+  return currentVel;
 }
 
 void PidMotor::runMotor(int dir, int pwmVal){
