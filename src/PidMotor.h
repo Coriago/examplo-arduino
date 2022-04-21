@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <Arduino.h>
+#include "LowPass.h"
 
 class PidMotor {
 public:
