@@ -2,6 +2,8 @@
 #include "src/SerialComms.h"
 
 const byte MOTOR_COUNT = 4;
+bool pidEnabled = true;
+
 SerialComms comms;
 
 PidMotor motors[] ={
@@ -28,7 +30,25 @@ void setup() {
   Serial.println("<Arduino is ready>");
 }
 
-void runMotors() {
+void runMotorsEffort() {
+  int efforts[MOTOR_COUNT];
+  comms.parseMotorEffort(efforts, MOTOR_COUNT);
+  int direction;
+  int pwmVal;
+  for (byte i = 0; i < MOTOR_COUNT; i++) {
+    if (efforts[i] < 0) {
+      direction = -1;
+      pwmVal = efforts[i] * -1;
+    } else {
+      direction = 1;
+      pwmVal = efforts[i];
+    }
+    motors[i].runMotor(direction, pwmVal);
+  }
+  comms.sendRecieved();
+}
+
+void runMotorsSpeed() {
   int efforts[MOTOR_COUNT];
   comms.parseMotorEffort(efforts, MOTOR_COUNT);
   int direction;
@@ -56,7 +76,7 @@ void stopMotors() {
 void sendSensorData() {
   float vels[MOTOR_COUNT];
   for (byte i = 0; i < MOTOR_COUNT; i++) {
-    vels[i] = motors[i].update();
+    vels[i] = motors[i].getVelocity();
   }
   comms.sendMotorData(vels, MOTOR_COUNT);
 }
@@ -69,10 +89,11 @@ void loop() {
   // Check if a full command has arrived
   if (comms.hasNewData()) {
     char type = comms.getType();
+
     // Execute commands depending on type
     switch (type) {
       case SerialTypes::mtr_effort_cmd:
-        runMotors();
+        runMotorsEffort();
         break;
       case SerialTypes::mtr_stop_cmd:
         stopMotors();
@@ -82,6 +103,9 @@ void loop() {
     }
   }
 
+  if (pidEnabled) {
+    for (PidMotor x : motors) x.update();
+  }
   // sendSensorData();
 }
 
