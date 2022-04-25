@@ -18,7 +18,7 @@ PidMotor::PidMotor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, uint8_t enc
 
     // Velocity
     targetVel = 0;
-    velocity = 0;
+    curVel = 0;
     pos = 0;
 
     // Memory
@@ -75,8 +75,8 @@ void PidMotor::update(void) {
   }
 
   // Run the Motor
-  this->runMotor(dir, pwmVal);
-  velocity = currentVelFilt;
+  // this->runMotor(dir, pwmVal);
+  curVel = currentVelFilt;
 }
 
 void PidMotor::runMotor(int dir, int pwmVal){
@@ -103,7 +103,7 @@ int PidMotor::getPos(void) {
 }
 
 float PidMotor::getVelocity(void) {
-  return velocity;
+  return curVel;
 }
 
 void PidMotor::pulseEncoder() {

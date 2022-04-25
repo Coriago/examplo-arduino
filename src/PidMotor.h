@@ -24,7 +24,7 @@ private:
     uint8_t _dirPin1, _dirPin2, _pwmPin, _encPinA, _encPinB;
     int pos, prevPos;
     long prevTime;
-    float targetVel, velocity, prevErrorIntegral, kp, ki;
+    float targetVel, curVel, prevErrorIntegral, kp, ki;
     LowPass filter;
 };
 

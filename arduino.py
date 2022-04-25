@@ -1,6 +1,4 @@
 # from inputs import devices
-
-from locale import MON_1
 from inputs import get_gamepad
 import math
 import threading
@@ -211,7 +209,7 @@ if __name__ == '__main__':
                 lastcmd = msgcmd
         arduinoReply = recvLikeArduino()
         if not (arduinoReply == 'XXX'):
-            print(arduinoReply + f", {semaphore}")
+            print(arduinoReply)
             if arduinoReply == "c":
                 semaphore -= 1
         sleep(0.01)

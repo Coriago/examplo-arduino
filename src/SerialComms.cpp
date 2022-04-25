@@ -38,14 +38,17 @@ char SerialComms::getType(void) {
     return receivedChars[0];
 };
 
-void SerialComms::sendMotorEffort(int efforts[], byte motorNumber) {
-    String cmd = String(SerialTypes::mtr_effort_cmd);
-    for(int i = 0; i < motorNumber-1; i++) {
-        cmd += String(efforts[i]);
-        cmd += " ";
+void SerialComms::sendMotorEffort(int efforts[], byte motorCount) {
+    String data = String(startMarker);
+    data += String(SerialTypes::mtr_effort_cmd);
+    data += ",";
+    for(byte i = 0; i < motorCount-1; i++) {
+        data += String(efforts[i]);
+        data += ",";
     }
-    cmd += efforts[motorNumber-1];
-    Serial.println(cmd);
+    data += efforts[motorCount-1];
+    data += String(endMarker);
+    Serial.println(data);
 };
 
 void SerialComms::parseMotorEffort(int efforts[], byte motorCount) {
@@ -62,18 +65,50 @@ void SerialComms::parseMotorEffort(int efforts[], byte motorCount) {
     }
 };
 
-
-void SerialComms::sendMotorData(float vels[], byte motorCount) {
+void SerialComms::sendMotorSpeed(float vels[], byte motorCount) {
     String data = String(startMarker);
-    data += String(SerialTypes::mtr_snsr_data);
+    data += String(SerialTypes::mtr_speed_cmd);
     data += ",";
-    for (byte i = 0; i < motorCount - 1; i++) {
+    for(byte i = 0; i < motorCount-1; i++) {
         data += String(vels[i]);
         data += ",";
     }
-    data += String(vels[motorCount - 1]);
+    data += vels[motorCount-1];
     data += String(endMarker);
     Serial.println(data);
+};
+
+void SerialComms::parseMotorSpeed(float vels[], byte motorCount) {
+    char tempChars[numChars];
+    strcpy(tempChars, receivedChars);
+    char * strtoIndx;
+
+    // Skip the type char
+    strtoIndx = strtok(tempChars, ",");
+
+    for (byte i = 0; i < motorCount; i++) {
+        strtoIndx = strtok(NULL, ",");
+        vels[i] = atof(strtoIndx);
+    }
+};
+
+void SerialComms::sendSensorData(float vels[], byte motorCount, int battery, double volt) {
+    long now = micros();
+    if (now - last_sensor_update >= sensor_update_interval) {
+        last_sensor_update = now;
+        String data = String(startMarker);
+        data += String(SerialTypes::mtr_snsr_data);
+        data += ",";
+        for (byte i = 0; i < motorCount; i++) {
+            data += String(vels[i]);
+            data += ",";
+        }
+        data += String(battery);
+        data += ",";
+        data += String(volt);
+        data += String(endMarker);
+        Serial.println(data);
+    }
 }
 
 void SerialComms::sendRecieved(void) {
