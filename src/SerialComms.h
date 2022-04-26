@@ -29,7 +29,7 @@ public:
     void sendMotorSpeed(float vels[], byte motorCount);
     void parseMotorSpeed(float vels[], byte motorCount);
     
-    void sendSensorData(float vels[], byte motorCount, int battery, double volt);
+    void sendSensorData(float vels[], byte motorCount, int pwm, int battery, double volt);
     void sendError(String msg);
     void sendRecieved(void);
 
@@ -39,7 +39,7 @@ private:
     const byte numChars = 64;
     const char startMarker = '<';
     const char endMarker = '>';
-    const long sensor_update_interval = 5e5;
+    const long sensor_update_interval = 1e5;
     long last_sensor_update = 0;
 };
 

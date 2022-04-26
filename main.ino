@@ -1,19 +1,12 @@
 #include "src/PidMotor.h"
 #include "src/SerialComms.h"
+#include "src/Battery.h"
 
 const byte MOTOR_COUNT = 4;
 bool pidEnabled = true;
 
-int voltage_offset = 5;
-double voltage_avg = 0;
-int voltage_count = 0;
-int avg_count = 15;
-int percentage = 0;
-double batt_percentage[20] = {12.6, 12.45, 12.33, 12.25, 12.07, 11.95, 11.86, 11.74, 11.62, 11.56, 11.51, 11.45, 11.39, 11.36, 11.3, 11.24, 11.18, 11.12, 11.06, 10.83};
-
-
 SerialComms comms;
-
+Battery battery(A0);
 PidMotor motors[] ={
   PidMotor(45,44,10,20,13),
   PidMotor(47,46,5,3,23),
@@ -67,42 +60,25 @@ void runMotorsSpeed() {
 
 void stopMotors() {
   for (byte i = 0; i < MOTOR_COUNT; i++) {
+    motors[i].setMotorSpeed(0);
+    motors[i].setMotorSpeed(0);
+    motors[i].runMotor(0, 0);
     motors[i].runMotor(0, 0);
   }
   comms.sendRecieved();
 }
 
-int getBatteryPercentage(double volt) {
-  for (int i = 0; i < 20; i++) {
-    if (volt >= batt_percentage[i]) {
-      return (20 - i) * 5;
-    }
-  }
-  return 0;
-}
-
 void sendSensorData() {
   // Voltage Sensor data
-  int volt = analogRead(A0);
-  double voltage = map(volt,0,1023, 0, 2500) + voltage_offset;
-  voltage /= 100;
-  voltage_avg += voltage;
-  voltage_count += 1;
-
-  if (voltage_count == avg_count) {
-    voltage_avg /= avg_count;
-    percentage = getBatteryPercentage(voltage_avg);
-    voltage_count = 0;
-    voltage_avg = 0;
-  }
+  double voltage = battery.getBatteryVoltage();
+  int percentage = battery.getBatteryPercentage();
 
   // Motor sensor data
   float vels[MOTOR_COUNT];
   for (byte i = 0; i < MOTOR_COUNT; i++) {
     vels[i] = motors[i].getVelocity();
   }
-  comms.sendSensorData
-  (vels, MOTOR_COUNT, percentage, voltage);
+  comms.sendSensorData(vels, MOTOR_COUNT, motors[0].getPwm(), percentage, voltage);
 }
 
 void loop() {

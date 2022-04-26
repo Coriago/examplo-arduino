@@ -32,7 +32,8 @@ def sendToArduino(stringToSend):
     serialPort.write(stringWithMarkers.encode('utf-8')) # encode needed for Python3
 
 
-#==================
+#================== 301.625mm one rotation
+#  
 
 def recvLikeArduino():
     global startMarker, endMarker, serialPort, dataStarted, dataBuf, messageComplete
@@ -166,7 +167,7 @@ if __name__ == '__main__':
     while True:
 
         leftY = round(joy.LeftJoystickY, 3)
-        leftX = round(joy.LeftJoystickX, 3) * 1.1
+        leftX = round(joy.LeftJoystickX, 3)
         rightX = round(joy.RightJoystickX, 3)
 
         # Deadzone
@@ -178,15 +179,21 @@ if __name__ == '__main__':
             rightX = 0
 
         den = max(abs(leftY) + abs(leftX) + abs(rightX), 1)
-        m1 = int(((leftY + leftX + rightX) / den) * -255)
-        m2 = int(((leftY - leftX + rightX) / den) * -255)
-        m3 = int(((leftY + leftX - rightX) / den) * -255)
-        m4 = int(((leftY - leftX - rightX) / den) * -255)
+        # m1 = int(((leftY + leftX + rightX) / den) * -255)
+        # m2 = int(((leftY - leftX + rightX) / den) * -255)
+        # m3 = int(((leftY + leftX - rightX) / den) * -255)
+        # m4 = int(((leftY - leftX - rightX) / den) * -255)
 
-        if leftY == 0 and leftX == 0 and rightX == 0:
-            msgcmd = "e"
-        else:
-            msgcmd = f"g,{m1},{m2},{m3},{m4}"
+        m1 = round(float(((leftY + leftX + rightX) / den) * -4.6), 2)
+        m2 = round(float(((leftY - leftX + rightX) / den) * -4.6), 2)
+        m3 = round(float(((leftY + leftX - rightX) / den) * -4.6), 2)
+        m4 = round(float(((leftY - leftX - rightX) / den) * -4.6), 2)
+
+        # if leftY == 0 and leftX == 0 and rightX == 0:
+        #     msgcmd = "e"
+        # else:
+        
+        msgcmd = f"f,{m1},{m2},{m3},{m4}"
 
         # Tank Diff Drive
         # leftSide = int(round(joy.LeftJoystickY, 2) * -255.0)
@@ -209,7 +216,8 @@ if __name__ == '__main__':
                 lastcmd = msgcmd
         arduinoReply = recvLikeArduino()
         if not (arduinoReply == 'XXX'):
-            print(arduinoReply)
+            if not (arduinoReply == 'c'):
+                print(arduinoReply)
             if arduinoReply == "c":
                 semaphore -= 1
         sleep(0.01)

@@ -17,12 +17,13 @@ public:
     void pulseEncoder(void);
     int getPos(void);
     float getVelocity(void);
+    int getPwm(void);
 
     const int ROTATION_COUNT = 90;
 
 private:
     uint8_t _dirPin1, _dirPin2, _pwmPin, _encPinA, _encPinB;
-    int pos, prevPos;
+    int pos, prevPos, currentPwm;
     long prevTime;
     float targetVel, curVel, prevErrorIntegral, kp, ki;
     LowPass filter;

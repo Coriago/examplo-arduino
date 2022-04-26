@@ -6,6 +6,7 @@ endMarker = '>'
 dataStarted = False
 dataBuf = ""
 messageComplete = False
+all_messages = []
 
 def setupSerial(baudRate, serialPortName):
     global serialPort
@@ -64,8 +65,8 @@ def waitForArduino():
     # serialPort.write("<c>".encode('utf-8'))
 
 time_effort_tables = [
-    { "time": 0.9, "effort": 200 },
-    { "time": 0.4, "effort": 250 },
+    { "time": 3, "effort": 250 },
+    { "time": 3, "effort": 0 },
     { "time": 0.7, "effort": 0 },
     { "time": 0.6, "effort": 70 },
     { "time": 0.3, "effort": 150 },
@@ -88,8 +89,14 @@ if __name__ == '__main__':
             start = time()
         
         arduinoReply = recvLikeArduino()
-        if not (arduinoReply == 'XXX'):
-            print(arduinoReply)
+        if not (arduinoReply == "XXX" or arduinoReply == "c"):
+            all_messages.append(arduinoReply)
         sleep(0.001)
+    
+    print(len(all_messages))
+
+    for m in all_messages:
+        mlist = m.split(",")
+        print(f"{mlist[0]},{mlist[5]},{mlist[1]}")
         
         

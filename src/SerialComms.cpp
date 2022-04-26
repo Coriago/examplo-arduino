@@ -92,17 +92,21 @@ void SerialComms::parseMotorSpeed(float vels[], byte motorCount) {
     }
 };
 
-void SerialComms::sendSensorData(float vels[], byte motorCount, int battery, double volt) {
+void SerialComms::sendSensorData(float vels[], byte motorCount, int pwm, int battery, double volt) {
     long now = micros();
     if (now - last_sensor_update >= sensor_update_interval) {
+        float t = ((float) now) / 1e6;
         last_sensor_update = now;
         String data = String(startMarker);
-        data += String(SerialTypes::mtr_snsr_data);
+        // data += String(SerialTypes::mtr_snsr_data);
+        data += String(t);
         data += ",";
         for (byte i = 0; i < motorCount; i++) {
             data += String(vels[i]);
             data += ",";
         }
+        data += String(pwm);
+        data += ",";
         data += String(battery);
         data += ",";
         data += String(volt);

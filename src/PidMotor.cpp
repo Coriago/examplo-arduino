@@ -2,7 +2,7 @@
 #include "PidMotor.h"
 
 PidMotor::PidMotor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, uint8_t encPinA, uint8_t encPinB) : 
-  filter(15, 1e3, true)
+  filter(3, 1e3, true)
 {
     _dirPin1 = dirPin1;
     _dirPin2 = dirPin2;
@@ -27,8 +27,8 @@ PidMotor::PidMotor(uint8_t dirPin1, uint8_t dirPin2, uint8_t pwmPin, uint8_t enc
     prevTime = 0;
     
     // PID Constants
-    kp = 0;
-    ki = 0;
+    kp = 75;
+    ki = 90;
 }
 
 void PidMotor::setInterrupt(void (*interrupt)(void)) {
@@ -74,12 +74,19 @@ void PidMotor::update(void) {
     pwmVal = 255;
   }
 
+  // Set pwm to 0 when stopped
+  if (fabs(currentVelFilt) < 0.2 && targetVel == 0) {
+    pwmVal = 0;
+    dir = 0;
+  }
+
   // Run the Motor
-  // this->runMotor(dir, pwmVal);
+  this->runMotor(dir, pwmVal);
   curVel = currentVelFilt;
 }
 
 void PidMotor::runMotor(int dir, int pwmVal){
+  currentPwm = pwmVal;
   analogWrite(_pwmPin,pwmVal); // Motor speed
   if(dir == 1){ 
     // Turn one way
@@ -100,6 +107,10 @@ void PidMotor::runMotor(int dir, int pwmVal){
 
 int PidMotor::getPos(void) {
   return pos;
+}
+
+int PidMotor::getPwm(void) {
+  return currentPwm;
 }
 
 float PidMotor::getVelocity(void) {
