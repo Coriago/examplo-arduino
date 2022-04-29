@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Arduino",
-            "compilerPath": "/home/pi/Downloads/arduino-1.8.1/hardware/tools/avr/bin/avr-g++",
+            "compilerPath": "/home/robo/Downloads/arduino-1.8.1/hardware/tools/avr/bin/avr-g++",
             "compilerArgs": [
                 "-std=gnu++11",
                 "-fpermissive",
@@ -15,14 +15,14 @@
             ],
             "intelliSenseMode": "gcc-x64",
             "includePath": [
-                "/home/pi/Downloads/arduino-1.8.1/hardware/arduino/avr/cores/arduino",
-                "/home/pi/Downloads/arduino-1.8.1/hardware/arduino/avr/variants/mega",
-                "/home/pi/Downloads/arduino-1.8.1/hardware/tools/avr/lib/gcc/avr/7.3.0/include",
-                "/home/pi/Downloads/arduino-1.8.1/hardware/tools/avr/lib/gcc/avr/7.3.0/include-fixed",
-                "/home/pi/Downloads/arduino-1.8.1/hardware/tools/avr/avr/include"
+                "/home/robo/Downloads/arduino-1.8.1/hardware/arduino/avr/cores/arduino",
+                "/home/robo/Downloads/arduino-1.8.1/hardware/arduino/avr/variants/mega",
+                "/home/robo/Downloads/arduino-1.8.1/hardware/tools/avr/lib/gcc/avr/7.3.0/include",
+                "/home/robo/Downloads/arduino-1.8.1/hardware/tools/avr/lib/gcc/avr/7.3.0/include-fixed",
+                "/home/robo/Downloads/arduino-1.8.1/hardware/tools/avr/avr/include"
             ],
             "forcedInclude": [
-                "/home/pi/Downloads/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Arduino.h"
+                "/home/robo/Downloads/arduino-1.8.1/hardware/arduino/avr/cores/arduino/Arduino.h"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11",
